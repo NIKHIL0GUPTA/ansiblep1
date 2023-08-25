@@ -1,0 +1,35 @@
+---
+- hosts: all
+  user: root
+  tasks:
+    - name: install git
+      yum:
+        name: git
+        state: present
+    - name: install maven
+      yum:
+        name: maven
+        state: present
+    - name: tomcat installation
+      get_url :
+        url : https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.79/bin/apache-tomcat-9.0.79.tar.gz
+        dest : /opt
+    - name : extract
+      unarchive :
+        src : /opt/apache-tomcat-9.0.79.tar.gz
+        dest : /opt
+        remote_src : yes
+    - name : providing premission
+      file :
+        path : /opt/apache-tomcat-9.0.79/bin/startup.sh
+        mode : 0777
+    - name : start tomcat service
+      shell : nohup ./startup.sh
+      args:
+        chdir: /opt/apache-tomcat-9.0.79/bin
+    - name: git clone
+      git :
+        repo : https://github.com/NIKHIL0GUPTA/live01.git
+        dest : /root/live01
+        version : main
+        update : yes
